@@ -243,9 +243,12 @@ class GtpConnection():
             board_move = args[1]
             color = color_to_int(board_color)
             if args[1].lower() == 'pass':
-                self.board.play_move(PASS, color)
+                self.error("Illegal Move: {} wrong coordinate" .format(args[1]))
+                
+                '''self.board.play_move(PASS, color)
                 self.board.current_player = GoBoardUtil.opponent(color)
                 self.respond()
+                '''
                 return
             coord = move_to_coord(args[1], self.board.size)
             if coord:
