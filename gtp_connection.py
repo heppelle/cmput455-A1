@@ -242,7 +242,7 @@ class GtpConnection():
             board_color = args[0].lower()
             board_move = args[1]
             color = color_to_int(board_color)
-            if args[1].lower() == 'pass':
+            if args[1].lower() == 'pass':                                    # passing is illigal
                 self.error("Illegal Move: {} wrong coordinate" .format(args[1]))
                 
                 '''self.board.play_move(PASS, color)
@@ -257,8 +257,8 @@ class GtpConnection():
                 self.error("Error executing move {} converted from {}"
                            .format(move, args[1]))
                 return
-            if not self.board.play_move(move, color):
-                self.respond("Illegal Move: {}".format(board_move))
+            if not self.board.play_move(move, color):                        # modify self.board.play_move to catch capturing error.
+                self.respond("Illegal Move: {}".format(board_move))          # modify self.board.play_move to catch 
                 return
             else:
                 self.debug_msg("Move: {}\nBoard:\n{}\n".
