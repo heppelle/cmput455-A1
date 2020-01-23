@@ -161,6 +161,19 @@ class SimpleGoBoard(object):
                 single_capture = nb_point
         return single_capture
 
+    def _detect_capture(self, nb_point):
+        """
+        Check if a move will capture the oponents rock
+        if yes, retun True
+        else, retunr False
+        """
+
+        opp_block = self._block_of(nb_point)
+        if not self._has_liberty(opp_block):
+            return True
+        else:
+            return False
+
     def play_move(self, point, color):
         """
         Play a move of color on point
@@ -183,11 +196,16 @@ class SimpleGoBoard(object):
         self.board[point] = color
         single_captures = []
         neighbors = self._neighbors(point)
-        for nb in neighbors:
+        for nb in neighbors:                                            # captures 
             if self.board[nb] == opp_color:
-                single_capture = self._detect_and_process_capture(nb)
-                if single_capture != None:
+                if self._detect_capture(nb):
+                    self.board[point] = EMPTY
+                    return False
+                """
+                single_capture = self._detect_and_process_capture(nb)   # call _detect_capture, if yes, undo move and raise an error.
+                if single_capture != None:                              
                     single_captures.append(single_capture)
+                """
         block = self._block_of(point)
         if not self._has_liberty(block): # undo suicide move
             self.board[point] = EMPTY
