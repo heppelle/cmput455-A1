@@ -286,6 +286,9 @@ class GtpConnection():
         move_as_string = format_point(move_coord)
         if self.board.is_legal(move, color):
             self.board.play_move(move, color)
+            if move_as_string == "PASS":
+                self.respond('resign')
+                exit()
             self.respond(move_as_string)
         else:
             self.respond("Illegal move: {}".format(move_as_string))
