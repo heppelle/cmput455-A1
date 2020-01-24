@@ -211,8 +211,7 @@ class GtpConnection():
         
         #self.respond(empty_spots)
         #self.respond()
-        return
-
+        return 
     def gogui_rules_side_to_move_cmd(self, args):
         """ We already implemented this function for Assignment 1 """
         color = "black" if self.board.current_player == BLACK else "white"
@@ -240,7 +239,21 @@ class GtpConnection():
             
     def gogui_rules_final_result_cmd(self, args):
         """ Implement this function for Assignment 1 """
-        self.respond("unknown")
+        """ 1. check if there are any moves left for the current player,
+               if yes, return unknown.
+               oherwise return the oppsosite clour.
+        """
+        legal_moves = []
+        move = self.board.get_empty_points()
+        for point in move:
+            if self.board.is_legal(point, self.board.current_player):
+                legal_moves.append(point)
+
+        if (len(legal_moves) == 0):
+            winner = "white" if self.board.current_player == BLACK else "white"
+            self.respond(winner)
+        else:
+            self.respond("unknown")
 
     def play_cmd(self, args):
         """ Modify this function for Assignment 1 """
@@ -251,8 +264,13 @@ class GtpConnection():
             board_color = args[0].lower()
             board_move = args[1]
             color = color_to_int(board_color)
+            
+            if (color_to_int(board_color) != self.board.current_player):
+                self.error("Illegal Move: wrong color")
+                return
+
             if args[1].lower() == 'pass':                                    # passing is illigal
-                self.error("Illegal Move: {} wrong coordinate" .format(args[1]))
+                self.error("Illegal Move: wrong coordinate")
                 
                 '''self.board.play_move(PASS, color)
                 self.board.current_player = GoBoardUtil.opponent(color)
@@ -272,6 +290,7 @@ class GtpConnection():
             else:
                 self.debug_msg("Move: {}\nBoard:\n{}\n".
                                 format(board_move, self.board2d()))
+            self.board.current_player = GoBoardUtil.opponent(color)
             self.respond()
         except Exception as e:
             self.respond('Error: {}'.format(str(e)))
@@ -284,12 +303,13 @@ class GtpConnection():
         move = self.go_engine.get_move(self.board, color)
         move_coord = point_to_coord(move, self.board.size)
         move_as_string = format_point(move_coord)
+        if move_as_string == "PASS":                               # if a player can only pass according to the move generator,
+            self.respond('resign')
+            return                               
         if self.board.is_legal(move, color):
             self.board.play_move(move, color)
-            if move_as_string == "PASS":
-                self.respond('resign')
-                exit()
             self.respond(move_as_string)
+            self.board.current_player = GoBoardUtil.opponent(color)
         else:
             self.respond("Illegal move: {}".format(move_as_string))
 

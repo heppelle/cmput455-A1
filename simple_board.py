@@ -182,9 +182,10 @@ class SimpleGoBoard(object):
         assert is_black_white(color)
         # Special cases
         if point == PASS:
-            self.ko_recapture = None
-            self.current_player = GoBoardUtil.opponent(color)
-            return True
+            return False
+            #self.ko_recapture = None
+            #self.current_player = GoBoardUtil.opponent(color)
+            
         elif self.board[point] != EMPTY:
             return False
         if point == self.ko_recapture:
