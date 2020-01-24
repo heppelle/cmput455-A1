@@ -204,9 +204,13 @@ class GtpConnection():
         empty_spots = self.board.get_empty_points()
         gtp_moves = []
         for spot in empty_spots:
-            coords = point_to_coord(spot, self.board.size)
-            gtp_moves.append(format_point(coords))
+            #coords = point_to_coord(spot, self.board.size)
+            if self.board.is_legal(spot,self.board.current_player):
+                gtp_moves.append(format_point(coords))
+            
+
         sorted_moves = ' '.join(sorted(gtp_moves))
+
         self.respond(sorted_moves)
         
         #self.respond(empty_spots)

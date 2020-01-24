@@ -214,7 +214,7 @@ class SimpleGoBoard(object):
         self.ko_recapture = None
         if in_enemy_eye and len(single_captures) == 1:
             self.ko_recapture = single_captures[0]
-        self.current_player = GoBoardUtil.opponent(color)
+        #self.current_player = GoBoardUtil.opponent(color)
         return True
 
     def neighbors_of_color(self, point, color):
