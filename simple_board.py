@@ -173,6 +173,17 @@ class SimpleGoBoard(object):
             return True
         else:
             return False
+            
+    def _detect_occupied(self, nb_point):
+        """
+        detect a play on an occupied point.
+
+        """
+
+        if self.board[nb_point] != EMPTY:
+            return True
+        else:
+            return False
 
     def play_move(self, point, color):
         """

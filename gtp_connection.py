@@ -284,6 +284,13 @@ class GtpConnection():
                 self.error("Error executing move {} converted from {}"
                            .format(move, args[1]))
                 return
+    
+            if self.board._detect_occupied(move):
+                self.respond("Illegal Move: Point is occupied.")
+                return
+            if self.board._detect_capture(move):
+                self.respond("Illegal Move: Capturing is illigal")
+                return
             if not self.board.play_move(move, color):                        # modify self.board.play_move to catch capturing error.
                 self.respond("Illegal Move: {}".format(board_move))          # modify self.board.play_move to catch 
                 return
