@@ -29,7 +29,7 @@ class SimpleGoBoard(object):
         # Try to play the move on a temporary copy of board
         # This prevents the board from being messed up by the move
         legal = board_copy.play_move(point, color)
-        return legal
+        return legal[0]
 
     def get_empty_points(self):
         """
@@ -173,32 +173,22 @@ class SimpleGoBoard(object):
             return True
         else:
             return False
-            
-    def _detect_occupied(self, nb_point):
-        """
-        detect a play on an occupied point.
-
-        """
-
-        if self.board[nb_point] != EMPTY:
-            return True
-        else:
-            return False
-
+    
     def play_move(self, point, color):
         """
         Play a move of color on point
-        Returns boolean: whether move was legal
+        Returns boolean: whether move was legal, string: reason for illegal move
         """
         assert is_black_white(color)
         # Special cases
         if point == PASS:
-            return False
+            return False, ""
             #self.ko_recapture = None
             #self.current_player = GoBoardUtil.opponent(color)
             
         elif self.board[point] != EMPTY:
-            return False
+            return False, "occupied"
+
         if point == self.ko_recapture:
             return False
             
@@ -212,7 +202,7 @@ class SimpleGoBoard(object):
             if self.board[nb] == opp_color:
                 if self._detect_capture(nb):
                     self.board[point] = EMPTY
-                    return False
+                    return False, "capture"
                 """
                 single_capture = self._detect_and_process_capture(nb)   # call _detect_capture, if yes, undo move and raise an error.
                 if single_capture != None:                              
@@ -221,12 +211,14 @@ class SimpleGoBoard(object):
         block = self._block_of(point)
         if not self._has_liberty(block): # undo suicide move
             self.board[point] = EMPTY
-            return False
+            return False, "suicide"
+        """
         self.ko_recapture = None
         if in_enemy_eye and len(single_captures) == 1:
             self.ko_recapture = single_captures[0]
         #self.current_player = GoBoardUtil.opponent(color)
-        return True
+        """
+        return True, ""
 
     def neighbors_of_color(self, point, color):
         """ List of neighbors of point of given color """

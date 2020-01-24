@@ -288,19 +288,28 @@ class GtpConnection():
                 self.error("Error executing move {} converted from {}"
                            .format(move, args[1]))
                 return
-    
-            if self.board._detect_occupied(move):
-                self.respond("Illegal Move: Point is occupied.")
-                return
-            if self.board._detect_capture(move):
-                self.respond("Illegal Move: Capturing is illigal")
-                return
-            if not self.board.play_move(move, color):                        # modify self.board.play_move to catch capturing error.
-                self.respond("Illegal Move: {}".format(board_move))          # modify self.board.play_move to catch 
-                return
+            legal, reason = self.board.play_move(move,color)
+            if (legal == False):
+                if reason == "occupied":
+                    self.error("Illegal Move: The point is occupied.")
+                    return
+                elif reason == "capture":
+                    self.error("Illegal Move: Capturing is not allowed.")
+                    return
+                elif reason == "suicide":
+                    self.error("Illegal Move: Suicide is not allowed")
+                    return
+                else:
+                    self.error("Illegal Move: unknown")
             else:
                 self.debug_msg("Move: {}\nBoard:\n{}\n".
                                 format(board_move, self.board2d()))
+            """
+            if not self.board.play_move(move, color):            
+                self.respond("Illegal Move: {}".format(board_move))
+                return
+            """
+            
             self.board.current_player = GoBoardUtil.opponent(color)
             self.respond()
         except Exception as e:
